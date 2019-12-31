@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Forms</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.css">
+    <style type="text/css">
+        body{ font: 14px sans-serif; text-align: center; background-color: #ffe6ff; }
+    </style>
+    <style type="text/css">
+    	
+    div.top_layer {
+    	height: 100px;
+  		width: 100%;
+  		background-color: #ff00ff;
+  		vertical-align: text-bottom;
+    }
+
+    div.form {
+    display: block;
+    width: 600px;
+    height: 200px;
+    margin: auto;
+    border-style: solid;
+    border-color: #33ae19;
+  	border-width: 2px;	
+	background-color: white;
+    }
+
+    div.form_question {
+    display: block;
+    width: 600px;
+    height: auto;
+    margin: auto;
+    border-style: solid;
+    border-color: #33ae19;
+  	border-width: 2px;	
+	background-color: white;
+	
+    }
+
+    input[type=text] {
+    width: 540px;
+    height: 50px;
+  	border: none;
+  	border-bottom: 2px solid grey;
+  	font-size: 30px;
+  	margin-left: 20px;
+	}
+
+	input[type=text].description {
+	width: 540px;
+    height: 20px;
+  	border: none;
+  	border-bottom: 2px solid grey;
+  	font-size: 10px;
+  	margin-left: 20px;
+	}
+
+	input[type=text].Question {
+		margin-bottom: 20px;
+		width: 300px;
+		height: 30px;
+		font-size: 20px;
+	}
+
+	input[type=text].Question_answer {
+		margin-bottom: 20px;
+		width: 300px;
+		height: 30px;
+		font-size: 10px;
+	}
+
+	input[type=radio].radio {
+		height: 20px;
+	}
+	select {
+		width: 200px;
+	}
+
+	button.add_option {
+
+		height: 20px;
+		width: 100px;
+
+	}
+	
+	button.add_option_form {
+		height: 20px;
+		width: auto;
+	}
+	</style>
+</head>
+<body>
+	<div class="top_layer">
+	<center>
+		<table height="50px">
+		<tr></tr>	
+		</table>
+		<h3>Questions</h3>
+	</center>
+	
+	</div>
+	<br>
+
+	<div class="form">
+		<br>
+		<table>
+			<br>
+			<tr>
+				<td>
+					<input type="text" name="title" value="Untitled Form">
+				</td>
+			</tr>
+		</table>
+		<br>
+		<br>
+		<table>
+			<tr>
+				<td>
+					<input type="text" name="description" value="Add Description" class="description">
+				</td>
+			</tr>
+		</table>
+	</div>
+	<div class="form_question" id="form_add0">
+		<table id="information">
+			<tr>
+				<td>
+					<span>
+					<input type="text" value="Question" id="Question1" class="Question"> &nbsp;&nbsp;&nbsp;&nbsp;
+					</span>
+					<span>
+						<select id="selectform_add0" onchange="change(this.id)">
+  							<option value="Select">Select</option>
+							<option value="Text">Text</option>
+						</select>
+					</span>
+				</td>
+			</tr>
+		</table>
+		
+		<table id="changeform_add0">
+
+			<tr id="tr0form_add0">
+				<th class="input_size">
+					<input type="radio" value="Add Option" class="radio"> 
+				</th>
+				<th class="input_size">
+					<input type="text" value="Add Option" class="Question_answer">
+				</th>
+			</tr>
+
+		</table>
+		<button onclick="addoption(this.id)" value="Add option" class="add_option" id="buttontr0form_add0">Add Option</button>
+	</div>
+	<br>
+	<br>
+	<button onclick="addform(this.id)" class="add_option_form" id="buttonform_add0">Add More Questions</button>
+<script type="text/javascript">
+	function addoption(button_number) {
+		var button_text = document.getElementById(button_number);
+		var tr_index = button_number.search("f");
+		var tr_index_number = parseInt(button_number.substr(8,tr_index-1));
+		var create_tr = document.createElement('tr');
+		var append_tr = document.getElementById(button_number.substr(6,button_number.length-1));
+		alert(button_number);
+		tr_index_number++;
+		var add_tr = 'tr' + tr_index_number + button_number.substr(tr_index,button_number.length-1);
+		button_text.id = "buttontr" + tr_index_number + button_number.substr(tr_index,button_number.length-1);
+		create_tr.setAttribute('id',add_tr);
+		create_tr.innerHTML = '<td class="input_size"><input type="radio" value="Add Option" class="radio"></td><td class="input_size"><input type="text" value="Add Option" class="Question_answer"></td>';
+		append_tr.parentNode.appendChild(create_tr);
+
+	}
+	function addform(form_addition) {
+		var button_form_element = document.getElementById(form_addition);
+		var previous_form = form_addition.substr(6,form_addition.length-1);
+		var get_previous_form = document.getElementById(previous_form);
+		var previous_form_number = parseInt(form_addition.substr(14,form_addition.length-1));
+		var create_form = document.createElement('div');
+		previous_form_number++;
+		var generate_new_form_number = "form_add" + previous_form_number;
+		create_form.setAttribute('id',generate_new_form_number);
+		button_form_element.id = "buttonform_add" + previous_form_number;
+		create_form.innerHTML = '<hr><br><br><table id="information"><tr><td><span><input type="text" value="Question" id="Question1" class="Question"> &nbsp;&nbsp;&nbsp;&nbsp;</span><span><select id="selectform_add' + previous_form_number +'" onchange="change(this.id)"><option value="Select">Select</option><option value="Text">Text</option></select></span></td></tr></table><table id="changeform_add' + previous_form_number + '"><tr id="tr0form_add'+ previous_form_number +'"><th class="input_size"><input type="radio" value="Add Option" class="radio"></th><th class="input_size"><input type="text" value="Add Option" class="Question_answer"></th></tr></table><button onclick="addoption(this.id)" value="Add option" class="add_option" id="buttontr0form_add' + previous_form_number + '">Add Option</button><br><br>';
+		get_previous_form.appendChild(create_form);
+	}
+	function change(select_id) {
+		var select = document.getElementById(select_id);
+		var form_id = document.getElementById("form_add"+select_id.substr(14,select_id.length-1));
+		var create_table = document.createElement('table');
+		var select_the_table = "_change" + form_id.id;
+		create_table.setAttribute('id',select_the_table);
+		alert(select_id);
+		var table_id = document.getElementById(select_the_table.substr(1,select_the_table.length-1));
+		if(select.value==="Select")
+		{
+			
+			create_button = document.createElement('button');
+			create_button.setAttribute('id',"buttontr0" + form_id.id);
+			create_button.setAttribute('onclick',"addoption(this.id)");
+			create_button.setAttribute('value',"Add option");
+			create_button.setAttribute('class',"add_option");
+			create_button.innerHTML = "Add Option";
+			create_table.id = create_table.id.substr(1,create_table.length-1);
+			form_id.parentNode.appendChild(create_button);	
+			table_id.innerHTML = '<tr id="tr0' + form_id.id + '"><th class="input_size"><input type="radio" value="Add Option" class="radio"></th><th class="input_size"><input type="text" value="Add Option" class="Question_answer"></th></tr><button onclick="addoption(this.id)" value="Add option" class="add_option" id="buttontr0' + form_id.id + '">Add Option</button>';
+			form_id.appendChild(create_table);
+			
+		}
+		else if(select.value==="Text")
+		{
+			table_id.innerHTML = '<tr id="tr0' + form_id.id + '"><th class="input_size"><input type="text" value="Add Option" class="Question_answer"></th></tr>';
+			form_id.appendChild(create_table);
+			form_id.removeChild(table_id);
+			removeButton = document.getElementById("buttontr0" + form_id.id);
+			form_id.removeChild(removeButton);
+			create_table.id = create_table.id.substr(1,create_table.length-1);
+		}
+	}
+</script>
+</body>
+</html>

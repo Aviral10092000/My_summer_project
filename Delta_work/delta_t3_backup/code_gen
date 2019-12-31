@@ -1,0 +1,191 @@
+
+<html><head>
+    <meta charset="UTF-8">
+    <title>Forms</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.css">
+    <style type="text/css">
+        body{ font: 14px sans-serif; text-align: center; background-color: #ffe6ff; }
+    </style>
+    <style type="text/css">
+    	
+    div.top_layer {
+    	height: 100px;
+  		width: 100%;
+  		background-color: #ff00ff;
+  		vertical-align: text-bottom;
+    }
+
+    div.form {
+    display: block;
+    width: 600px;
+    height: 200px;
+    margin: auto;
+    border-style: solid;
+    border-color: #33ae19;
+  	border-width: 2px;	
+	background-color: white;
+    }
+
+    div.form_question {
+    display: block;
+    width: 600px;
+    height: auto;
+    margin: auto;
+    border-style: solid;
+    border-color: #33ae19;
+  	border-width: 2px;	
+	background-color: white;
+	
+    }
+    div._form_question {
+    	display: block;
+    	width: 600px;
+    	height: auto;
+    	margin: auto;
+    	border-style: solid;
+    	border-color: #33ae19;
+  		border-width: 2px;	
+		background-color: white;
+    }
+    input[type=text] {
+    width: 540px;
+    height: 50px;
+  	border: none;
+  	border-bottom: 2px solid grey;
+  	font-size: 30px;
+  	margin-left: 20px;
+	}
+
+	input[type=text].description {
+	width: 540px;
+    height: 20px;
+  	border: none;
+  	border-bottom: 2px solid grey;
+  	font-size: 10px;
+  	margin-left: 20px;
+	}
+
+	input[type=text].Question {
+		margin-bottom: 20px;
+		width: 300px;
+		height: 30px;
+		font-size: 20px;
+	}
+
+	input[type=text].Question_answer {
+		margin-bottom: 20px;
+		width: 300px;
+		height: 30px;
+		font-size: 10px;
+	}
+
+	input[type=radio].radio {
+		height: 20px;
+	}
+	select {
+		width: 200px;
+	}
+
+	button.add_option {
+
+		height: 20px;
+		width: 100px;
+
+	}
+	
+	button.add_option_form {
+		height: 20px;
+		width: auto;
+	}
+	</style>
+</head>
+<body>
+	<div class="top_layer">
+	<center>
+		<table height="50px">
+		<tbody><tr></tr>	
+		</tbody></table>
+		<h3>Questions</h3>
+	</center>
+	<button type="submit" onclick="">Submit</button>
+	</div>
+	<br>
+
+	<div class="form">
+		<br>
+		<br><table>
+			
+			<tbody><tr>
+				<td>
+					<input type="text" name="title" value="Untitled Form">
+				</td>
+			</tr>
+		</tbody></table>
+		<br>
+		<br>
+		<table>
+			<tbody><tr>
+				<td>
+					<input type="text" name="description" value="Add Description" class="description">
+				</td>
+			</tr>
+		</tbody></table>
+	</div>
+	<form id="data" class="_form_question" action="/action_page.php" method="get">
+	<div class="form_question">
+		<table id="information">
+			<tbody><tr>
+				<td>
+					<span>
+					<input type="text" value="Question" id="Question1" class="Question"> &nbsp;&nbsp;&nbsp;&nbsp;
+					</span>
+					<span>
+						<select id="selectform_add0" onchange="change()">
+  							<option value="Text">Text</option>
+						</select>
+					</span>
+				</td>
+			</tr>
+		</tbody></table>
+		
+		<table>
+
+			<tbody><tr>
+				<th class="input_size">
+					<input type="text" value="Answer" class="Question_answer">
+				</th>
+			</tr>
+
+		</tbody></table>
+		<br>
+		<br>
+	</div>
+
+	<table><div class="form_question"></div><tbody><tr><td><span><input type="text" value="Question" id="Question1" class="Question"> &nbsp;&nbsp;&nbsp;&nbsp;</span><span><select id="selectform_add0" onchange="change()"><option value="Text">Text</option></select></span></td></tr></tbody><tbody><tr><th class="input_size"><input type="text" value="Answer" class="Question_answer"></th></tr></tbody><br><br></table><table><div class="form_question"></div><tbody><tr><td><span><input type="text" value="Question" id="Question1" class="Question"> &nbsp;&nbsp;&nbsp;&nbsp;</span><span><select id="selectform_add0" onchange="change()"><option value="Text">Text</option></select></span></td></tr></tbody><tbody><tr><th class="input_size"><input type="text" value="Answer" class="Question_answer"></th></tr></tbody><br><br></table><table><div class="form_question"></div><tbody><tr><td><span><input type="text" value="Question" id="Question1" class="Question"> &nbsp;&nbsp;&nbsp;&nbsp;</span><span><select id="selectform_add0" onchange="change()"><option value="Text">Text</option></select></span></td></tr></tbody><tbody><tr><th class="input_size"><input type="text" value="Answer" class="Question_answer"></th></tr></tbody><br><br></table></form>
+	<button onclick="addform()" class="add_option_form">Add More Questions</button>
+	<button onclick="html_check()" class="add_option_form">Click</button>
+<script type="text/javascript">
+function addform() {
+	div_id = document.getElementById('data');
+	count_number_of_child = div_id.childElementCount;
+	new_question_block = document.createElement('table');
+	new_question_block.innerHTML = '<div class="form_question"><table id="information"><tr><td><span><input type="text" value="Question" id="Question1" class="Question"> &nbsp;&nbsp;&nbsp;&nbsp;</span><span><select id="selectform_add0" onchange="change()"><option value="Text">Text</option></select></span></td></tr></table><table><tr><th class="input_size"><input type="text" value="Answer" class="Question_answer"></th></tr></table><br><br></div>';
+	div_id.appendChild(new_question_block);
+
+}
+function html_check() {
+	html = document.getElementById('html');
+	console.log(html.innerHTML);
+
+}
+
+
+
+
+
+
+
+
+
+</script></body>
+</html>

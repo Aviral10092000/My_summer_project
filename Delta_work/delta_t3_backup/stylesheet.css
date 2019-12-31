@@ -1,0 +1,93 @@
+
+        body{ font: 14px sans-serif; text-align: center; background-color: #ffe6ff; }
+       	
+    div.top_layer {
+    	height: 100px;
+  		width: 100%;
+  		background-color: #ff00ff;
+  		vertical-align: text-bottom;
+    }
+
+    div.form {
+    display: block;
+    width: 600px;
+    height: 200px;
+    margin: auto;
+    border-style: solid;
+    border-color: #33ae19;
+  	border-width: 2px;	
+	background-color: white;
+    }
+
+    div.form_question {
+    display: block;
+    width: 600px;
+    height: auto;
+    margin: auto;
+    border-style: solid;
+    border-color: #33ae19;
+  	border-width: 2px;	
+	background-color: white;
+	
+    }
+    div._form_question {
+    	display: block;
+    	width: 600px;
+    	height: auto;
+    	margin: auto;
+    	border-style: solid;
+    	border-color: #33ae19;
+  		border-width: 2px;	
+		background-color: white;
+    }
+    input[type=text] {
+    width: 540px;
+    height: 50px;
+  	border: none;
+  	border-bottom: 2px solid grey;
+  	font-size: 30px;
+  	margin-left: 20px;
+	}
+
+	input[type=text].description {
+	width: 540px;
+    height: 20px;
+  	border: none;
+  	border-bottom: 2px solid grey;
+  	font-size: 10px;
+  	margin-left: 20px;
+	}
+
+	input[type=text].Question {
+		margin-bottom: 20px;
+		width: 300px;
+		height: 30px;
+		font-size: 20px;
+	}
+
+	input[type=text].Question_answer {
+		margin-bottom: 20px;
+		width: 300px;
+		height: 30px;
+		font-size: 10px;
+	}
+
+	input[type=radio].radio {
+		height: 20px;
+	}
+	select {
+		width: 200px;
+	}
+
+	button.add_option {
+
+		height: 20px;
+		width: 100px;
+
+	}
+	
+	button.add_option_form {
+		height: 20px;
+		width: auto;
+	}
+	

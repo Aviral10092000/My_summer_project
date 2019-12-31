@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Forms</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.css">
+    <style type="text/css">
+        body{ font: 14px sans-serif; text-align: center; background-color: #ffe6ff; }
+    </style>
+    <style type="text/css">
+    	
+    div.top_layer {
+    	height: 100px;
+  		width: 100%;
+  		background-color: #ff00ff;
+  		vertical-align: text-bottom;
+    }
+
+    div.form {
+    display: block;
+    width: 600px;
+    height: 200px;
+    margin: auto;
+    border-style: solid;
+    border-color: #33ae19;
+  	border-width: 2px;	
+	background-color: white;
+    }
+
+    div.form_question {
+    display: block;
+    width: 600px;
+    height: auto;
+    margin: auto;
+    border-style: solid;
+    border-color: #33ae19;
+  	border-width: 2px;	
+	background-color: white;
+	
+    }
+
+    input[type=text] {
+    width: 540px;
+    height: 50px;
+  	border: none;
+  	border-bottom: 2px solid grey;
+  	font-size: 30px;
+  	margin-left: 20px;
+	}
+
+	input[type=text].description {
+	width: 540px;
+    height: 20px;
+  	border: none;
+  	border-bottom: 2px solid grey;
+  	font-size: 10px;
+  	margin-left: 20px;
+	}
+
+	input[type=text].Question {
+		margin-bottom: 20px;
+		width: 300px;
+		height: 30px;
+		font-size: 20px;
+	}
+
+	input[type=text].Question_answer {
+		margin-bottom: 20px;
+		width: 300px;
+		height: 30px;
+		font-size: 10px;
+	}
+
+	input[type=radio].radio {
+		height: 20px;
+	}
+	select {
+		width: 200px;
+	}
+
+	button.add_option {
+
+		height: 20px;
+		width: 100px;
+
+	}
+	
+	</style>
+</head>
+<body>
+	<div class="top_layer">
+	<center>
+		<table height="50px">
+		<tr></tr>	
+		</table>
+		<h3>Questions</h3>
+	</center>
+
+	</div>
+	<br>
+
+	<div class="form">
+		<br>
+		<table>
+			<br>
+			<tr>
+				<td>
+					<input type="text" name="title" value="Untitled Form">
+				</td>
+			</tr>
+		</table>
+		<br>
+		<br>
+		<table>
+			<tr>
+				<td>
+					<input type="text" name="description" value="Add Description" class="description">
+				</td>
+			</tr>
+		</table>
+	</div>
+	<div class="form_question" id="form_add0">
+		<br>
+		<table id="information">
+			<tr>
+				<td>
+					<span>
+					<input type="text" name="Question" value="Question 1" class="Question"> &nbsp;&nbsp;&nbsp;&nbsp;
+					</span>
+					<span>
+						<select id="select_option" onchange="choose()">
+  							<option value="Select">Select</option>
+							<option value="Text">Text</option>
+						</select>
+					</span>
+				</td>
+			</tr>
+		</table>
+		
+		<table id="change">
+
+			<tr id="tr0">
+				<td class="input_size">
+					<input type="radio" value="Add Option" class="radio"> 
+				</td>
+				<td class="input_size">
+					<input type="text" value="Add Option" class="Question_answer">
+				</td>
+			</tr>
+		</table>
+		<button onclick="addvalue()" value="Add option" class="add_option">Add Option</button>
+		<br>
+		<br>
+		</div>
+		<br>
+		<br>
+	</div>
+	<br>
+	<br>
+	<button onclick="addform()" class="add_option">Add More Questions</button>
+<script type="text/javascript">
+var row_information = {
+	index : 0
+};
+function choose()
+{
+	
+	let select = document.getElementById("select_option");
+	let element = document.getElementById("change");
+    element.parentNode.removeChild(element);
+    row_information.index = 0;
+    element = document.getElementById("information");
+    let tr_created = "change";
+	let newElement = document.createElement("table");
+	newElement.setAttribute('id', tr_created);
+    if(select.value==="Select")
+	{
+		let html = '<tr id="tr0"><td class="input_size"><input type="radio" value="Add Option" class="radio"></td><td class="input_size"><input type="text" value="Add Option" class="Question_answer"></td></tr>';
+		newElement.innerHTML = html;
+		element.appendChild(newElement);
+	}
+	else if(select.value==="Text")
+	{
+
+		let html = '<tr id="tr0"><td class="input_size"><input type="text" value="Add Option" class="Question_answer"></td></tr>';
+		newElement.innerHTML = html;
+		element.appendChild(newElement);
+	}
+
+}
+function addvalue()
+{
+	let select = document.getElementById("select_option");
+		let tr = "tr";
+		tr = tr + row_information.index;
+		row_information.index = row_information.index + 1;
+		let tr_created = "tr";
+		tr_created = tr_created + row_information.index;
+		let insertRow = document.getElementById(tr);
+		let newElement = document.createElement("tr");
+	    newElement.setAttribute('id', tr_created);
+	if(select.value==="Select")
+	{
+		let html = '<td class="input_size"><input type="radio" value="Add Option" class="radio"></td><td class="input_size"><input type="text" value="Add Option" class="Question_answer"></td>'
+		newElement.innerHTML = html;
+		insertRow.parentNode.appendChild(newElement);
+	}
+	else if(select.value==="Text")
+	{
+		let html = '<td class="input_size"><input type="text" value="Add Option" class="Question_answer"></td>'
+		newElement.innerHTML = html;
+		insertRow.parentNode.appendChild(newElement);
+	}
+
+}
+</script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
