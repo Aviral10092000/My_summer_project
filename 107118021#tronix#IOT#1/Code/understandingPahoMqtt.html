@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<!--
+  Author: Aviral Verma (107118021), EEE - Nitt.
+  
+  Domain: Spider Tronix
+  
+  Sub-Domain - IOT
+  
+  Functions: startConnect(),onConnect(),doFail(e),onConnectionLost(responseObject),onMessageArrived(message),drawAxes(),label_x_axis(),label_y_axis(),plot(data_y),canvas_clear()
+  
+  Global Variables: 
+  var data_x = 0;                 //It is used for x-cordinate. It is indicating time
+  var arr_of_cordinates = [];     //It is an array. It is used for getting x-coordinate 
+  var count = 0; // It is a counter to track moving x axis.
+  var data_y = 0;// Y-cordinate of the upcoming data.
+  var canvas = document.getElementById("My_canvas");// Get canvas element
+  var ctx = canvas.getContext("2d");//Get 2d context of the canvas.
+
+-->
+
+
+<html>
+<head>
+<meta charset="utf-8">
+<title>Spider IOT task_1</title>
+<!-- 
+  The following line is the script for bringing the Paho.MQTT library. 
+  This library is used for connecting your html page to a MQTT server.
+-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.2/mqttws31.min.js" type="text/javascript"></script>
+<style>
+div.canvas {
+
+    display: block;
+    width: 1500px;
+    height: 850px;
+    margin: auto;
+    border: 3px solid green;
+    background-color: grey; 
+}
+div.check_box {
+    display: block;
+    width: 1500px;
+    height: 100px;
+    margin: auto;
+    border: 3px solid green;
+    background-color: grey; 
+}
+div.Data_box {
+    display: block;
+    width: 400px;
+    height: 200px;
+    margin: auto;
+    border: 3px solid green;
+    background-color: grey; 
+    text-align: left;
+}
+h6 {
+    font-size: 2em;
+    text-align: center;
+}
+button {
+	height: 100px;
+	width: 200px;
+}
+</style>
+</head>
+<body>
+	<button type="button" onclick="startConnect()" value="Connect">Connect</button>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.2/mqttws31.min.js" type="text/javascript"></script>
+<script>
+{
+	function startConnect()
+	{
+		client = new Paho.MQTT.Client("m24.cloudmqtt.com",31206,"client_id");
+		client.onConnectionLost = onConnectionLost;
+		client.onMessageArrived = onMessageArrived;
+		var options = 
+		{
+			timeout: 300,
+			useSSL: true,
+			userName: "yykncekw",
+    		password: "bWUv102S7mRG",
+    		onSuccess:onConnect,
+    		onFailure:doFail
+		}
+		client.connect(options);
+	}
+	function onConnect()
+	{
+		console.log(1);
+		client.subscribe("esp/test");
+		message = new Paho.MQTT.Message("Hi!");
+		message.destinationName = "esp/test";
+		client.send(message);
+	}
+	function doFail(e)
+	{
+		console.log(2);
+	}
+	function onConnectionLost(responseObject)
+	{
+		console.log(3);
+	}
+	function onMessageArrived(message)
+	{
+		console.log(message.payloadString);
+	}
+}
+</script>
+</body>
+</html>
+
