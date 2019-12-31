@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>
+		Ball Blast
+	</title>
+	<style>
+canvas {
+    border: 1px solid #d3d3d3;
+    background-color: #f1f1f1;
+}
+</style>
+</head>
+<body bgcolor="black" onload = "start_game()">
+
+<script type="text/javascript">
+lastRender = 0;
+progress_for_rock_generation = 0;
+window.requestAnimationFrame(loop);
+	state_of_cannon = {
+	
+	width_cannon : 80,
+	height_cannon : 5,
+	height_shoot : 20,
+	width_shoot : 20,
+	color : 0,
+	initial_x : 0,
+	initial_y : 595,
+	shoot_x : 30,
+	shoot_y : 575,
+	x_movement : 0,
+	movement_step : 5,
+	direction : -1
+	};
+rocks_arr_object = [];
+bullet_of_cannon = {
+	radius : 10,
+	initial_position_y : 575,
+	initial_position_x : state_of_cannon.x_movement + state_of_cannon.shoot_x
+}
+odd_number = [];
+for(var i = 1;i<4800;i = i + 2)
+	odd_number.push(i/8);
+progress_for_rock_generation = 0;
+flag_for_start = 0;
+function loop(timestamp) {
+	progress = timestamp - lastRender;
+	if(flag_for_start==0)
+	{
+		flag_for_start = 1;
+		myGameArea.start();
+	}
+	//ctx.drawImage(image_background,0,0);
+	update(progress);
+  	//draw();
+  	progress_for_rock_generation = progress_for_rock_generation + progress;
+  	//display_rocks = display_rocks + progress;
+  	//clearing_movement_rock = clearing_movement_rock + progress;
+  	if(progress_for_rock_generation>3000)
+  	{
+  		progress_for_rock_generation = 0;	
+  		generate_rocks();
+  	}
+  	//music_sound = music_sound + progress;
+  	lastRender = timestamp;
+
+  	window.requestAnimationFrame(loop);
+
+
+}
+function update(progress)
+{
+	rock_move();
+	motion_of_bullet();
+	check_for_bullet_rock_overlap();
+	//check_rock_cannon_overlap();
+}
+
+document.addEventListener('keydown', keyDownHandler, false);
+function check_for_bullet_rock_overlap()
+{
+	for(var i = 0;i<bullet_array.length;i++)
+	{
+		for(var j = 0;j<rocks_arr_object.length;j++)
+		{
+			if((bullet_array[i].x_coordinate_bullet - rocks_arr_object[j].x_cordinate_of_rocks)*(bullet_array[i].x_coordinate_bullet - rocks_arr_object[j].x_cordinate_of_rocks) + (bullet_array[i].y_coodinate_bullet - rocks_arr_object[j].height_from_top)*(bullet_array[i].y_coodinate_bullet - rocks_arr_object[j].height_from_top)<(bullet_array[i].radius + rocks_arr_object[j].radius)*(bullet_array[i].y_coodinate_bullet - rocks_arr_object[j].height_from_top))
+			{
+				bullet_array[i].destroy();
+				bullet_array[i].splice(i,1);
+				i--;
+				rocks_arr_object[i].strength_rock = rocks_arr_object[i].strength_rock - 1;
+				if(rocks_arr_object[i].strength_rock==0)
+				{
+					rocks_arr_object[i].strength_rock = rocks_arr_object[i].strength_split = rocks_arr_object[i].strength_split/2;
+					if(rocks_arr_object[i].strength_split==0)
+					{
+						rocks_arr_object.delete();
+						rocks_arr_object.splice(j,1);
+						j--;
+					}
+					else
+					{
+						rock_generated = rocks_arr_object[i];
+						rock_generated.direction = -rocks_arr_object.direction;
+						rocks_arr_object.push(rock_generated);
+					}
+					continue;
+				}
+			}
+		}
+	}
+}
+
+function start_game() 
+{
+	myGameArea.start();
+	cannonPiece = new cannonComponent(state_of_cannon.width_cannon,state_of_cannon.height_cannon,state_of_cannon.height_shoot,state_of_cannon.width_shoot,state_of_cannon.color,state_of_cannon.direction);
+	//game_controls();
+}
+var myGameArea = {
+	canvas : document.createElement('canvas'),
+	start : function() {
+		this.canvas.width = 600;
+		this.canvas.height = 600;
+		this.context = this.canvas.getContext("2d");
+		document.body.insertBefore(this.canvas,document.body.childNodes[0]);
+	}
+}
+function cannonComponent(width_cannon,height_cannon,height_shoot,width_shoot,color,direction) {
+	this.width_shoot = width_shoot;
+	this.width_cannon = width_cannon;
+	this.height_cannon = height_cannon;
+	this.height_shoot = height_shoot;
+	ctx = myGameArea.context;
+	ctx.fillStyle = "#ff0000";
+	ctx.beginPath();
+	ctx.fillRect(state_of_cannon.initial_x + state_of_cannon.x_movement,state_of_cannon.initial_y,this.width_cannon,this.height_cannon);
+	ctx.fillRect(state_of_cannon.shoot_x + state_of_cannon.x_movement,state_of_cannon.shoot_y,this.width_shoot,this.height_shoot);
+	//ctx.drawImage(img,0+state_of_cannon.x,550);
+	ctx.closePath();
+	ctx.fill();
+	ctx.stroke();
+
+	
+}
+function keyDownHandler(event)
+{
+
+	if(event.keyCode == 65)
+	{
+		if(state_of_cannon.x_movement>0)
+		{
+			state_of_cannon.x_movement = state_of_cannon.x_movement - state_of_cannon.movement_step;
+			state_of_cannon.direction = 1;
+		}
+	}
+	else if(event.keyCode==68)
+	{
+		if(state_of_cannon.x_movement<520)
+		{
+			state_of_cannon.x_movement = state_of_cannon.x_movement + state_of_cannon.movement_step;
+			state_of_cannon.direction = -1;
+		}
+	}
+	drawCannonComponent();
+}
+drawCannonComponent = function() {
+
+	ctx = myGameArea.context;
+	ctx.fillStyle = "#ff0000";
+	ctx.beginPath();
+	ctx.clearRect(state_of_cannon.initial_x + state_of_cannon.x_movement + state_of_cannon.movement_step*state_of_cannon.direction,state_of_cannon.initial_y,state_of_cannon.width_cannon,state_of_cannon.height_cannon);
+	ctx.clearRect(state_of_cannon.shoot_x + state_of_cannon.x_movement + state_of_cannon.movement_step*state_of_cannon.direction,state_of_cannon.shoot_y,state_of_cannon.width_shoot,state_of_cannon.height_shoot);
+	
+	ctx.fillRect(state_of_cannon.initial_x + state_of_cannon.x_movement,state_of_cannon.initial_y,state_of_cannon.width_cannon,state_of_cannon.height_cannon);
+	ctx.fillRect(state_of_cannon.shoot_x + state_of_cannon.x_movement,state_of_cannon.shoot_y,state_of_cannon.width_shoot,state_of_cannon.height_shoot);
+	//ctx.drawImage(img,0+state_of_cannon.x,550);
+	ctx.closePath();
+	ctx.fill();
+	ctx.stroke();	
+	
+}
+function generate_rocks()
+{
+		height_rock_ground = parseInt(Math.random()*1000);
+		height_rock_ground = height_rock_ground%300;
+		height_rock_ground = height_rock_ground + 50;
+		strength_rock = parseInt(Math.random()*1000);
+		strength_rock = strength_rock%10;
+		strength_rock = strength_rock + 1;
+		generate_rocks_array(height_rock_ground,strength_rock);
+
+}
+
+function generate_rocks_array(height,strength)
+{
+	var rocks_arr_object_created = {
+	height_from_top : height,
+	x_cordinate_of_rocks : -50,
+	strength_rock: strength,
+	strength_split: strength,
+	radius : 40,
+	color : "#FF9900",
+	odd_number_index : 0,
+	x_movement_step : 5,
+	boundary_0 : 0,
+	boundary_600 : 0,
+	direction : 1,
+	falling_direction : 1,
+	draw : function() {
+		ctx = myGameArea.context;
+		ctx.fillStyle = this.color;
+		ctx.beginPath();
+		ctx.arc(this.x_cordinate_of_rocks,this.height_from_top, this.radius, 0, 2 * Math.PI);
+		ctx.fill();
+		ctx.font = "25px Georgia";
+		ctx.fillStyle = "#000000";
+		ctx.fillText(this.strength_rock, this.x_cordinate_of_rocks - 5,this.height_from_top - 5);
+		},
+	clear : function() {
+		ctx = myGameArea.context;
+		ctx.fillStyle = "#f1f1f1";
+		ctx.beginPath();
+		ctx.arc(this.x_cordinate_of_rocks,this.height_from_top, this.radius+ 1, 0, 2 * Math.PI);
+		ctx.fill();
+	},
+	destroy : function()
+	{
+		delete this;
+	}
+	
+	};
+	rocks_arr_object_created.boundary_0 = rocks_arr_object_created.radius;
+	rocks_arr_object_created.boundary_600 = myGameArea.canvas.width - rocks_arr_object_created.radius;
+
+	rocks_arr_object_created.draw();
+	rocks_arr_object.push(rocks_arr_object_created);	
+}
+function rock_move()
+{
+	
+	for(let i = 0;i<rocks_arr_object.length;i++)
+	{
+		
+		rocks_arr_object[i].clear();
+
+		if(rocks_arr_object[i].x_cordinate_of_rocks>=rocks_arr_object[i].boundary_600)
+		{
+			rocks_arr_object[i].direction = -1;
+		}
+		else if(rocks_arr_object[i].x_cordinate_of_rocks<=rocks_arr_object[i].boundary_0)
+		{
+			rocks_arr_object[i].direction = 1;	
+		}
+		rocks_arr_object[i].x_cordinate_of_rocks = rocks_arr_object[i].x_cordinate_of_rocks + (rocks_arr_object[i].x_movement_step)*(rocks_arr_object[i].direction);
+		if(rocks_arr_object[i].height_from_top + odd_number[rocks_arr_object[i].odd_number_index]>myGameArea.canvas.height)
+		{
+			
+			rocks_arr_object[i].falling_direction = -1;
+			rocks_arr_object[i].odd_number_index = rocks_arr_object[i].odd_number_index + 1;
+		}
+		else if(rocks_arr_object[i].odd_number_index==1)
+		{
+			rocks_arr_object[i].falling_direction = 1;
+		}
+		
+		rocks_arr_object[i].odd_number_index = rocks_arr_object[i].odd_number_index + rocks_arr_object[i].falling_direction;
+		rocks_arr_object[i].height_from_top = rocks_arr_object[i].height_from_top + odd_number[rocks_arr_object[i].odd_number_index]*rocks_arr_object[i].falling_direction;
+		rocks_arr_object[i].draw();
+	}
+
+	drawCannonComponent();
+}
+bullet_array = [];
+function motion_of_bullet()
+{
+	
+	if(bullet_array.length==0)
+	{
+		create_bullet();
+	}
+	else
+	{
+		for(var i=0;i<bullet_array.length;i++)
+		{
+			
+			bullet_array[i].clear();
+			bullet_array[i].y_coodinate_bullet = bullet_array[i].y_coodinate_bullet - bullet_array[i].movement_step_bullet;
+			if(bullet_array[i].y_coodinate_bullet==300)
+			{
+				create_bullet();
+			}
+			if(bullet_array[i].y_coodinate_bullet<-50)
+			{
+				bullet_array[i].destroy();
+				bullet_array.splice(i,1);
+
+				continue;
+			}
+			bullet_array[i].draw();
+			console.log(bullet_array.length);
+		}
+		
+	}
+	
+}
+
+function create_bullet()
+{
+	bullet_object = {
+		radius : state_of_cannon.width_shoot/2,
+		color : "#FF9900",
+		x_coordinate_bullet : state_of_cannon.x_movement + state_of_cannon.shoot_x + 10,
+		y_coodinate_bullet : 600 - state_of_cannon.height_shoot + state_of_cannon.height_cannon,
+		movement_step_bullet : 5,
+		draw : function() {
+			ctx = myGameArea.context;
+			ctx.fillStyle = "#ff33aa";
+			ctx.beginPath();
+			ctx.arc(this.x_coordinate_bullet,this.y_coodinate_bullet, this.radius, 0, 2 * Math.PI);
+			ctx.fill();
+		},
+		destroy : function() {
+			delete this;
+		},
+		clear : function() {
+			ctx = myGameArea.context;
+			ctx.fillStyle = "#f1f1f1";
+			ctx.beginPath();
+			ctx.arc(this.x_coordinate_bullet,this.y_coodinate_bullet, this.radius + 1, 0, 2 * Math.PI);
+			ctx.fill();
+		}
+
+	};
+	bullet_array.push(bullet_object);
+}
+</script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

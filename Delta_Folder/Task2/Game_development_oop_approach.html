@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>
+		Ball Blast
+	</title>
+	<style>
+canvas {
+    border: 1px solid #d3d3d3;
+    background-color: #f1f1f1;
+}
+</style>
+</head>
+<body bgcolor="black" onload = "start_game()">
+
+	<script type="text/javascript">
+	timepass = 0;
+	lastRender = 0;
+	var myGameArea = {
+		canvas : document.createElement('canvas'),
+		lastRender : 0,
+		progress_for_rock_generation : 0,
+		score : 0,
+		myStorage : window.localStorage,
+		bullet_launch : 0,
+		start : function() 
+		{
+			this.canvas.width = 600;
+			this.canvas.height = 600;
+			this.context = this.canvas.getContext("2d");
+			ctx = this.context;
+			ctx.font = "20px Georgia";
+			ctx.fillText(this.score,280,20);
+			document.body.insertBefore(this.canvas,document.body.childNodes[0]);
+			
+			ctx.font = "20px Georgia";
+			ctx.fillText("Highest Score : ",380,20);
+			if((localStorage.getItem('maximum_score')==undefined))
+			{
+				localStorage.setItem('maximum_score',this.score);
+			}
+			ctx.fillText(localStorage.getItem('maximum_score'),520,20);
+			this.array_of_rock= [];
+			this.bullet_of_array = [];
+		},
+		generate_rocks : function()
+		{
+			height_rock_ground = parseInt(Math.random()*1000);
+			height_rock_ground = height_rock_ground%300;
+			height_rock_ground = height_rock_ground + 80;
+			strength_rock = parseInt(Math.random()*1000);
+			strength_rock = strength_rock%10;
+			strength_rock = strength_rock + 1;
+			this.array_of_rock.push((new rock(height_rock_ground,strength_rock)));
+		},
+		loop : function(timestamp)
+		{
+			time_difference = timestamp - lastRender;
+			myGameArea.progress_for_rock_generation = myGameArea.progress_for_rock_generation + time_difference;
+			myGameArea.bullet_launch = myGameArea.bullet_launch + time_difference;
+			if(myGameArea.progress_for_rock_generation>1000.0)
+		  	{
+		  		myGameArea.progress_for_rock_generation = 0;
+		  		myGameArea.generate_rocks();
+		  	}
+		  	if(myGameArea.bullet_launch>(200.0 - myGameArea.score)&&myGameArea.score<=200)
+		  	{
+		  		myGameArea.bullet_launch = 0;
+		  		bullet_activities.createBullet = 1;
+		  		bullet_activities.bullet_movement();
+		  	}
+		  	lastRender = timestamp;
+		  	rock_activities.rock_movement();
+		  	bullet_activities.bullet_movement();
+		  	bullet_activities.check_rock_bullet_overlap();
+		  	rock_activities.check_rock_cannon_overlap();
+		  	window.requestAnimationFrame(myGameArea.loop);
+		  	
+		},
+		keyDownHandler : function(event)
+		{
+			
+			if(event.keyCode)
+			{
+				document.removeEventListener('keydown',myGameArea.keyDownHandler);
+				start_game();
+			}
+		}
+	}
+	var bullet_activities = {
+		createBullet : 0,
+		bullet_movement : function()
+		{
+			if(this.createBullet==1)
+			{
+				myGameArea.bullet_of_array.push((new bullet_object));
+				this.createBullet = 0;
+			}
+			{
+				for(var i=0;i<myGameArea.bullet_of_array.length;i++)
+				{
+					cannon.draw();
+					myGameArea.bullet_of_array[i].clear();
+					myGameArea.bullet_of_array[i].y_coodinate_bullet = myGameArea.bullet_of_array[i].y_coodinate_bullet - myGameArea.bullet_of_array[i].movement_step_bullet;
+					if(myGameArea.bullet_of_array[i].y_coodinate_bullet<-50)
+					{
+						myGameArea.bullet_of_array[i].destroy();
+						myGameArea.bullet_of_array.splice(i,1);
+						continue;
+					}
+					myGameArea.bullet_of_array[i].draw();
+				}
+				
+			}
+			ctx.fillStyle = "#000000";
+			ctx.clearRect(0,0,600,40);
+			ctx.fillText(myGameArea.score,280,20);
+			ctx.fillText("Highest Score : ",380,20);
+			ctx.fillText(localStorage.getItem('maximum_score'),560,20);
+		},
+		check_rock_bullet_overlap : function()
+		{
+			for(var i = 0;i<myGameArea.bullet_of_array.length;i++)
+			{
+
+				for(var j = 0;j<myGameArea.array_of_rock.length;j++)
+				{
+					if(myGameArea.bullet_of_array[i]==undefined)
+					break;
+					if((myGameArea.bullet_of_array[i].x_coordinate_bullet - myGameArea.array_of_rock[j].x_cordinate_of_rocks)*(myGameArea.bullet_of_array[i].x_coordinate_bullet - myGameArea.array_of_rock[j].x_cordinate_of_rocks) + (myGameArea.bullet_of_array[i].y_coodinate_bullet - myGameArea.array_of_rock[j].height_from_top)*(myGameArea.bullet_of_array[i].y_coodinate_bullet - myGameArea.array_of_rock[j].height_from_top)<(myGameArea.bullet_of_array[i].radius + myGameArea.array_of_rock[j].radius)*(myGameArea.bullet_of_array[i].radius + myGameArea.array_of_rock[j].radius))
+					{
+						myGameArea.array_of_rock[j].strength_rock--;
+						ctx.fillStyle = "#000000";
+						ctx.clearRect(0,0,600,40);
+						ctx.fillText(myGameArea.score,280,20);
+						ctx.fillText("Highest Score : ",480,20);
+						ctx.fillText(localStorage.getItem('maximum_score'),380,20);
+						myGameArea.bullet_of_array[i].destroy();
+						myGameArea.bullet_of_array.splice(i,1);
+						myGameArea.score++;
+						if(myGameArea.score>localStorage.getItem('maximum_score'))
+						{
+							localStorage.setItem('maximum_score',myGameArea.score);
+						}
+						if((myGameArea.array_of_rock[j].strength_rock)<=1)
+						{
+							
+							if(myGameArea.array_of_rock[j].strength_rock_compare<=0)
+							{
+								myGameArea.array_of_rock[j].destroy();
+								myGameArea.array_of_rock.splice(j,1);
+								i = -1;
+								break;
+							}
+							
+							myGameArea.array_of_rock[j].strength_rock_compare = parseInt(myGameArea.array_of_rock[j].strength_rock_compare/2);
+							myGameArea.array_of_rock[j].strength_rock = myGameArea.array_of_rock[j].strength_rock_compare;
+							height_rock_ground = myGameArea.array_of_rock[j].height_from_top;
+							strength_rock = myGameArea.array_of_rock[j].strength_rock;
+							myGameArea.array_of_rock.push((new rock(height_rock_ground,strength_rock)));
+							length_of_rock_array = myGameArea.array_of_rock.length;
+							myGameArea.array_of_rock[length_of_rock_array - 1].x_cordinate_of_rocks = myGameArea.array_of_rock[j].x_cordinate_of_rocks;
+							myGameArea.array_of_rock[length_of_rock_array - 1].odd_number_index = myGameArea.array_of_rock[j].odd_number_index;
+							myGameArea.array_of_rock[length_of_rock_array - 1].direction = -myGameArea.array_of_rock[j].direction;
+							i = -1;
+							break;
+
+							
+						}
+						
+					}
+					if(myGameArea.array_of_rock[j].strength_rock_compare==0)
+					{
+							myGameArea.array_of_rock[j].destroy();
+							myGameArea.array_of_rock.splice(j,1);
+							i = -1;
+							break;
+					}
+				}
+			}
+		}
+	}
+bullet_object = function()
+	{
+		this.radius = (cannon.width_shoot)/2;
+		this.color = "#FF9900";
+		this.x_coordinate_bullet = cannon.x_movement + cannon.shoot_x + 10;
+		this.y_coodinate_bullet = 600 - cannon.height_shoot + cannon.height_cannon;
+		this.movement_step_bullet = 5;
+		(this.draw) = function() 
+		{
+			ctx = myGameArea.context;
+			ctx.fillStyle = "#ff33aa";
+			ctx.beginPath();
+			ctx.arc(this.x_coordinate_bullet,this.y_coodinate_bullet, this.radius, 0, 2 * Math.PI);
+			ctx.fill();
+			
+		};
+		(this.destroy) = function() {
+			ctx = myGameArea.context;
+			ctx.fillStyle = "#f1f1f1";
+			ctx.beginPath();
+			ctx.arc(this.x_coordinate_bullet,this.y_coodinate_bullet, this.radius + 1, 0, 2 * Math.PI);
+			ctx.fill();
+			delete this;
+		};
+		(this.clear) = function() {
+			ctx = myGameArea.context;
+			ctx.fillStyle = "#f1f1f1";
+			ctx.beginPath();
+			ctx.arc(this.x_coordinate_bullet,this.y_coodinate_bullet, this.radius + 1, 0, 2 * Math.PI);
+			ctx.fill();
+		};
+	}
+
+	var rock_activities = {
+		rock_movement : function()
+		{
+			for(let i = 0;i<myGameArea.array_of_rock.length;i++)
+			{
+				
+				myGameArea.array_of_rock[i].clear();
+				if(myGameArea.array_of_rock[i].x_cordinate_of_rocks>=myGameArea.array_of_rock[i].boundary_600)
+				{
+					myGameArea.array_of_rock[i].direction = -1;
+				}
+				else if(myGameArea.array_of_rock[i].x_cordinate_of_rocks<=myGameArea.array_of_rock[i].boundary_0)
+				{
+					myGameArea.array_of_rock[i].direction = 1;	
+				}
+				myGameArea.array_of_rock[i].x_cordinate_of_rocks = myGameArea.array_of_rock[i].x_cordinate_of_rocks + (myGameArea.array_of_rock[i].x_movement_step)*(myGameArea.array_of_rock[i].direction);
+				if(myGameArea.array_of_rock[i].height_from_top + myGameArea.array_of_rock[i].odd_number[myGameArea.array_of_rock[i].odd_number_index]>myGameArea.canvas.height)
+				{
+					
+					myGameArea.array_of_rock[i].falling_direction = -1;
+					myGameArea.array_of_rock[i].odd_number_index = myGameArea.array_of_rock[i].odd_number_index + 1;
+				}
+				else if(myGameArea.array_of_rock[i].odd_number_index==1)
+				{
+					myGameArea.array_of_rock[i].falling_direction = 1;
+				}
+				
+				myGameArea.array_of_rock[i].odd_number_index = myGameArea.array_of_rock[i].odd_number_index + myGameArea.array_of_rock[i].falling_direction;
+				myGameArea.array_of_rock[i].height_from_top = myGameArea.array_of_rock[i].height_from_top + myGameArea.array_of_rock[i].odd_number[myGameArea.array_of_rock[i].odd_number_index]*myGameArea.array_of_rock[i].falling_direction;
+				myGameArea.array_of_rock[i].draw();
+			}
+		},
+		check_rock_cannon_overlap : function()
+		{
+			flag_for_game_over = 0;
+			for(let i = 0;i<myGameArea.array_of_rock.length;i++)
+			{
+				if((myGameArea.array_of_rock[i].height_from_top - (myGameArea.canvas.width - cannon.height_cannon))*(myGameArea.array_of_rock[i].height_from_top - myGameArea.canvas.width + cannon.height_cannon) + (myGameArea.array_of_rock[i].x_cordinate_of_rocks - (cannon.x_movement + cannon.width_cannon/2))*(myGameArea.array_of_rock[i].x_cordinate_of_rocks - (cannon.x_movement + cannon.width_cannon/2))<2500)
+				{
+					window.cancelAnimationFrame(myGameArea.loop());
+					ctx.clearRect(0,0,myGameArea.canvas.width,myGameArea.canvas.height);
+					ctx.font = "20px Georgia";
+					ctx.fillText("Game Over",myGameArea.canvas.width/2 - 30,myGameArea.canvas.height/2 -10);
+					flag_for_game_over = 1;
+					
+
+					myGameArea.array_of_rock = [];
+					myGameArea.bullet_of_array = [];
+					myGameArea.score = 0;
+					document.removeEventListener("keydown",cannon.keyDownHandler);
+					document.addEventListener('keydown', myGameArea.keyDownHandler, false);
+					break;
+				}
+			}
+
+		}
+	}
+	rock = function(height_rock_ground,strength_rock)
+	{
+		this.odd_number = [];
+		for(var i = 1;i<4800;i = i + 2)
+		this.odd_number.push(i/8);
+		this.height_from_top = height_rock_ground;
+		this.strength_rock = strength_rock;
+		this.radius = 40;
+		this.strength_rock_compare = strength_rock;
+		this.x_cordinate_of_rocks = -40;
+		this.odd_number_index = 1;
+		this.direction = 1;
+		this.boundary_600 = myGameArea.canvas.width - this.radius;
+		this.boundary_0 = this.radius;
+		this.x_movement_step = 5;
+		this.falling_direction = -1;
+		(this.draw) = function() {
+			ctx.fillStyle = "#33aa88";
+			ctx.beginPath();
+			ctx.arc(this.x_cordinate_of_rocks,this.height_from_top,this.radius, 0, 2 * Math.PI);
+			ctx.closePath();
+			ctx.fill();
+			ctx.font = "25px Georgia";
+			ctx.fillStyle = "#000000";
+			ctx.fillText(this.strength_rock,this.x_cordinate_of_rocks - 5,this.height_from_top - 5);
+			cannon.draw();
+		};
+		(this.clear) = function() {
+			ctx = myGameArea.context;
+			ctx.fillStyle = "#f1f1f1";
+			ctx.beginPath();
+			ctx.arc(this.x_cordinate_of_rocks,this.height_from_top,this.radius+1, 0, 2 * Math.PI);
+			ctx.fill();
+
+		};
+		(this.destroy) = function() {
+			ctx = myGameArea.context;
+			ctx.fillStyle = "#f1f1f1";
+			ctx.beginPath();
+			ctx.arc(this.x_cordinate_of_rocks,this.height_from_top,this.radius+1, 0, 2 * Math.PI);
+			ctx.fill();
+			delete this;
+		}
+	}
+	var cannon = 
+	{
+		width_cannon : 80,
+		height_cannon : 5,
+		height_shoot : 20,
+		width_shoot : 20,
+		shoot_x : 30,
+		shoot_y : 575,
+		movement_step : 20,
+		x_movement : 0,
+		direction : -1,
+		init : function() 
+		{
+			ctx = myGameArea.context;
+			this.draw();
+			document.addEventListener('keydown', cannon.keyDownHandler, false);
+		},
+		draw : function() 
+		{
+			ctx.beginPath();
+			ctx.fillStyle = "#ff0000";
+			ctx.fillRect(this.x_movement,myGameArea.canvas.width - this.height_cannon,this.width_cannon,this.height_cannon);
+			ctx.fillRect(this.shoot_x + this.x_movement,this.shoot_y,this.width_shoot,this.height_shoot);
+			ctx.closePath();
+			ctx.fill();
+		},
+		keyDownHandler : function(event)
+		{
+			cannon.clear();
+			if(event.keyCode == 65)
+			{
+				if(cannon.x_movement>0)
+				{
+					cannon.x_movement = cannon.x_movement - cannon.movement_step;
+					for(let i = cannon.x_movement + cannon.movement_step;i>cannon.x_movement;i--)
+					{
+						cannon.draw();
+						cannon.clear();
+					}
+					cannon.direction = 1;
+				}
+			}
+			else if(event.keyCode==68)
+			{
+				if(cannon.x_movement<520)
+				{
+					
+					cannon.x_movement = cannon.x_movement + cannon.movement_step;
+					for(let i = cannon.x_movement - cannon.movement_step;i<cannon.x_movement;i++)
+					{
+						cannon.draw();
+						cannon.clear();
+					}
+					cannon.direction = -1;
+				}
+			}
+			cannon.draw();
+		},
+		clear : function() 
+		{
+			ctx.beginPath();
+			ctx.fillStyle = "#f1f1f1";
+			ctx.fillRect(this.x_movement,myGameArea.canvas.width - this.height_cannon,this.width_cannon,this.height_cannon);
+			ctx.fillRect(this.shoot_x + this.x_movement,this.shoot_y,this.width_shoot,this.height_shoot);
+			ctx.closePath();
+			ctx.fill();
+		}
+	};
+function start_game()
+{
+	myGameArea.start();
+	cannon.init();
+	window.requestAnimationFrame(myGameArea.loop);
+}
+
+</script>
+</body>
+</html>

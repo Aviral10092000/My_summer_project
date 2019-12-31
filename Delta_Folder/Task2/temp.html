@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>
+		Ball Blast
+	</title>
+	<style>
+canvas {
+    border: 1px solid #d3d3d3;
+    background-color: #f1f1f1;
+}
+</style>
+</head>
+<body>
+	<canvas height="600px" width="600px" id="canvas">
+		
+	</canvas>
+	<script type="text/javascript">
+		var circle =    
+		{
+			x : 0,
+			y : 0,
+			radius : 0,
+			init : function(x,y,radius) {
+				this.x = x;
+				this.y = y;
+				this.radius = radius;
+				canvas = document.getElementById("canvas");
+				ctx = canvas.getContext("2d");
+			},
+			draw : function () 
+			{
+				ctx.fillStyle = "#ff0000";
+				ctx.beginPath();
+				ctx.arc(this.x,this.y,this.radius,0, 2 * Math.PI);
+				ctx.closePath();
+				ctx.fill();
+			},
+					
+			move : function(x,y) 
+			{
+				ctx.fillStyle = "#ff0000";
+				ctx.beginPath();
+				ctx.arc(this.x,this.y,this.radius,0, 2 * Math.PI);
+				ctx.closePath();
+				ctx.fill();
+			}
+		};
+	circle.init(100,100,20);
+	circle.draw();
+	circle.move(200,200);
+	/-------------------------------------------------------/
+
+	var cannon =    
+		{
+			x : 0,
+			y : 0,
+			radius : 0,
+			init : function(x,y,radius) {
+				this.x = x;
+				this.y = y;
+				this.radius = radius;
+			},
+			draw : function () 
+			{
+				ctx.fillStyle = "#000000";
+				ctx.beginPath();
+				ctx.arc(this.x,this.y,this.radius,0, 2 * Math.PI);
+				ctx.closePath();
+				ctx.fill();
+			},
+					
+			move : function(x,y) 
+			{
+				ctx.fillStyle = "#000000";
+				ctx.beginPath();
+				ctx.arc(this.x,this.y,this.radius,0, 2 * Math.PI);
+				ctx.closePath();
+				ctx.fill();
+			}
+		};
+	cannon.init(300,300,40);
+	cannon.draw();
+	cannon.move(400,400);
+	console.log(canvas);
+	</script>
+</body>
+</html>
